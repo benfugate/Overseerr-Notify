@@ -1,0 +1,7 @@
+{
+  "overseerr_host": "",
+  "overseerr_token": "",
+  "discord_webhook": "",
+  "num_requests": 500,
+  "DOCKER": false
+}
