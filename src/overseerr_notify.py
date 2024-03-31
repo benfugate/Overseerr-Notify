@@ -4,7 +4,7 @@ import os
 import json
 import argparse
 import requests
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 
 
 class OverseerrNotify:
@@ -22,6 +22,8 @@ class OverseerrNotify:
                             help="number of overseerr requests to look through")
         parser.add_argument("--num-requests", default=defaults["num_requests"],
                             help="number of overseerr requests to look through")
+        parser.add_argument("--ignore-hours", default=defaults["ignore_hours"],
+                            help="ignore notifying requests made in the last X hours")
         self.docker = defaults["DOCKER"]
         self.args = parser.parse_args()
 
@@ -86,11 +88,22 @@ class OverseerrNotify:
         self.print_timestamp_if_docker()
         print("Notification sent!")
 
+    def filter_by_time(self):
+        temp_pending_requests = []
+        ignore_hours = datetime.now(timezone.utc) - timedelta(hours=self.args.ignore_hours)
+        for pending_request in self.pending_requests:
+            created_at = (datetime.strptime(pending_request["createdAt"], "%Y-%m-%dT%H:%M:%S.%fZ")
+                          .replace(tzinfo=timezone.utc))
+            if created_at < ignore_hours:
+                temp_pending_requests.append(pending_request)
+        self.pending_requests = temp_pending_requests
+
 
 if __name__ == '__main__':
     overseerr_notify = OverseerrNotify()
     overseerr_notify.find()
     if overseerr_notify.pending_requests:
+        overseerr_notify.filter_by_time()
         overseerr_notify.print_timestamp_if_docker()
         print(f"{len(overseerr_notify.pending_requests)} pending requests found.")
         message = overseerr_notify.build_message()

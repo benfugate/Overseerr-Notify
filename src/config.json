@@ -2,6 +2,7 @@
   "overseerr_host": "",
   "overseerr_token": "",
   "discord_webhook": "",
+  "ignore_hours": 24,
   "num_requests": 500,
   "DOCKER": false
 }
