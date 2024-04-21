@@ -30,9 +30,10 @@ class OverseerrNotify:
         self.print_timestamp_if_docker()
         print("Starting Check")
 
-        if not self.args.overseerr_host \
-                or not self.args.overseerr_token \
-                or not self.args.discord_webhook:
+        if (not self.args.skip_health_check
+                and (not self.args.overseerr_host
+                     or not self.args.overseerr_token
+                     or not self.args.discord_webhook)):
             print("the following arguments are required: overseerr-host, overseerr-token, discord-webhook")
             exit(1)
 
@@ -102,8 +103,8 @@ class OverseerrNotify:
 if __name__ == '__main__':
     overseerr_notify = OverseerrNotify()
     overseerr_notify.find()
+    overseerr_notify.filter_by_time()
     if overseerr_notify.pending_requests:
-        overseerr_notify.filter_by_time()
         overseerr_notify.print_timestamp_if_docker()
         print(f"{len(overseerr_notify.pending_requests)} pending requests found.")
         message = overseerr_notify.build_message()
