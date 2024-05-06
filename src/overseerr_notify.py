@@ -61,30 +61,36 @@ class OverseerrNotify:
 
     def build_message(self):
         # Constructing the message
-        message_builder = ""
+        pending_requests = []
         for request in self.pending_requests:
-            # Replace host and protocol in serviceUrl with reverse_proxy_url
-            request_url = f"{self.args.overseerr_host}/{request["type"]}/{request["media"]["tmdbId"]}"
-
+            request_url = f"- {self.args.overseerr_host}/{request["type"]}/{request["media"]["tmdbId"]}"
             title_request = f"{self.args.overseerr_host}/api/v1/{request["type"]}/{request["media"]["tmdbId"]}"
             title_response = self._overseerr_get_request(title_request)
             title = title_response["title"] if "title" in title_response else title_response["name"]
 
-            message_builder += f"{title}: {request_url}\n"
-        return message_builder
-
-    def notify_discord(self, message_content):
-        self.print_timestamp_if_docker()
-        print("Preparing discord notification...")
-        payload = {
+            pending_requests.append(
+                {
+                    "name": title,
+                    "value": request_url,
+                    "inline": False
+                }
+            )
+        discord_msg = {
             "embeds": [
                 {
                     "title": "The following requests are in the 'Pending' state",
-                    "description": message_content,
-                    "color": 16711680  # Optional: Decimal color value, red in this case
+                    "color": 16711680,
+                    "timestamp": f"{datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3]}+00:00",
+                    "fields": [request for request in pending_requests]
                 }
             ]
         }
+        return discord_msg
+
+    def notify_discord(self):
+        payload = self.build_message()
+        self.print_timestamp_if_docker()
+        print("Preparing discord notification...")
         requests.post(self.args.discord_webhook, json=payload)
         self.print_timestamp_if_docker()
         print("Notification sent!")
@@ -107,8 +113,7 @@ if __name__ == '__main__':
     if overseerr_notify.pending_requests:
         overseerr_notify.print_timestamp_if_docker()
         print(f"{len(overseerr_notify.pending_requests)} pending requests found.")
-        message = overseerr_notify.build_message()
-        overseerr_notify.notify_discord(message)
+        overseerr_notify.notify_discord()
     else:
         overseerr_notify.print_timestamp_if_docker()
         print("No pending requests found :)")
