@@ -2,12 +2,30 @@
 
 This Python script is designed to check for pending requests in an Overseerr instance and notify Discord about them.
 
+<center>
+<img src="https://github.com/benfugate/Overseerr-Notify/blob/main/.github/resources/sample.png?raw=true" width="448" height="303">
+</center>
+
 ## Prerequisites
 
 - Python 3.x
 - Requests library (`pip install -r requirements.txt`)
 
 ## Usage
+
+### Docker
+
+```shell
+docker run
+  -e overseerr_host=<OVERSEERR_HOST>
+  -e overseerr_token=<OVERSEERR_API_TOKEN>
+  -e num_requests=<NUM_REQUESTS>
+  -e discord_webhook=<DISCORD_WEBHOOK>
+  -e ignore_hours=<NUM_IGNORE_HOURS>
+  benfugate/overseerr-notify
+```
+
+### Python
 
 1. Clone the repository or download the `overseerr_notify.py` file.
 2. Create a `config.json` file with the following structure:
