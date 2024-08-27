@@ -1,6 +1,6 @@
 # Overseerr Notification Tool
 
-This Python script is designed to check for pending requests in an Overseerr instance and notify Discord about them.
+This Python script is designed to check for pending requests and open issues in an Overseerr instance and notify Discord about them.
 
 <center>
 <img src="https://github.com/benfugate/Overseerr-Notify/blob/main/.github/resources/sample.png?raw=true" width="448" height="303">
@@ -35,6 +35,7 @@ docker run
   "overseerr_host": "YOUR_OVERSEERR_HOST_URL",
   "overseerr_token": "YOUR_OVERSEERR_API_TOKEN",
   "discord_webhook": "YOUR_DISCORD_WEBHOOK_URL",
+  "ignore_hours": "REQUEST_AGE_BEFORE_NOTIFY",
   "num_requests": "NUMBER_OF_REQUESTS_TO_LOOK_THROUGH",
   "DOCKER": true/false
 }
@@ -51,7 +52,8 @@ python3 overseerr_notify.py
 - `--overseerr-token`: Overseerr API token.
 - `--discord-webhook`: Discord webhook URL.
 - `--num-requests`: Number of Overseerr requests to look through.
+- `--ignore-hours`: Number of hours old a request must be before triggering a notification
 
 ## Functionality
-- The script retrieves pending requests from Overseerr and constructs a message.
-- It sends the message to a specified Discord webhook.
+- The script retrieves pending requests and open issues from Overseerr and constructs a message
+- It sends the messages to a specified Discord webhook
