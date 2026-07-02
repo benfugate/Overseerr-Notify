@@ -10,6 +10,9 @@ config["overseerr_token"] = os.environ.get("overseerr_token")
 config["discord_webhook"] = os.environ.get("discord_webhook")
 config["ignore_hours"] = int(os.environ.get("ignore_hours")) if os.environ.get("ignore_hours") else config["ignore_hours"]
 config["num_requests"] = int(os.environ.get("num_requests")) if os.environ.get("num_requests") else config["num_requests"]
+config["shelfmark_db"] = os.environ.get("shelfmark_db") or config["shelfmark_db"]
+config["shelfmark_webhook"] = os.environ.get("shelfmark_webhook")
+config["shelfmark_host"] = os.environ.get("shelfmark_host")
 
 with open('/usr/src/app/src/config.json', 'w', encoding='utf-8') as f:
     json.dump(config, f, ensure_ascii=False, indent=4)

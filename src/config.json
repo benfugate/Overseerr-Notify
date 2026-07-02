@@ -4,5 +4,8 @@
   "discord_webhook": "",
   "ignore_hours": 24,
   "num_requests": 500,
+  "shelfmark_db": "/data/shelfmark/users.db",
+  "shelfmark_webhook": "",
+  "shelfmark_host": "",
   "DOCKER": false
 }
